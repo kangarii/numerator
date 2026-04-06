@@ -185,6 +185,7 @@
     document.getElementById('padding').value    = '0';
     document.getElementById('prefix').value     = '';
     document.getElementById('suffix').value     = '';
+    document.getElementById('raw-output').value     = '';
     document.getElementById('affix-toggle').checked = false;
     document.getElementById('affix-section').classList.remove('open');
     document.getElementById('preview-format').value     = '';
