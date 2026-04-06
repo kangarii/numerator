@@ -1,4 +1,3 @@
-
 /* ============================================================
    SAWERIA-INSPIRED DARK THEME — ZERO EXTERNAL DEPENDENCIES
    ============================================================ */
@@ -91,19 +90,23 @@
 
   /* ---- LAYOUT ---- */
   .app-wrapper {
-    position: relative; z-index: 1;
-    display: flex;
-    min-height: calc(100vh - 54px);
+  position: relative;
+  z-index: 1;
   }
 
   /* ---- SIDEBAR ---- */
   aside {
-    width: var(--sidebar-w);
-    flex-shrink: 0;
-    background: var(--dark);
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    overflow-y: auto;
+  position: fixed;
+  top: 54px; /* tinggi header */
+  left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - 54px);
+  background: var(--dark);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 20;
   }
 
   .sidebar-section {
@@ -235,7 +238,13 @@
   #total-label { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
 
   /* ---- MAIN ---- */
-  main { flex: 1; background: var(--dark); overflow-y: auto; display: flex; flex-direction: column; }
+  main {
+  margin-left: var(--sidebar-w);
+  height: calc(100vh - 54px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  }
 
   /* Sticky sub-header */
   .preview-bar {
