@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nomorator — Document Numbering</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="\style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">№</div>
+    Nomorator
+    <span class="logo-badge">v2.0</span>
+  </div>
+  <div class="header-right">
+    <span class="header-label">Document Numbering Tool</span>
+    <div class="blink-dot"></div>
+  </div>
+</header>
+
+<div class="app-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside>
+
+    <!-- Titik Nomor -->
+    <div class="sidebar-section">
+      <div class="titik-box">
+        <p class="section-label yellow">⬡ Jumlah Titik Nomor (Kolom)</p>
+        <div class="field">
+          <label>Berapa titik (kolom) per lembar?</label>
+          <input type="number" id="titikCount" value="1" min="1" max="50" oninput="updateTitikVisual()">
+          <span class="hint">Contoh: 12 → tiap baris punya 12 nomor berbeda</span>
+        </div>
+        <div class="titik-visual" id="titik-visual"></div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Konfigurasi Dasar -->
+    <div class="sidebar-section">
+      <p class="section-label">Konfigurasi Dasar</p>
+      <div class="field">
+        <label>Angka Awal (Start)</label>
+        <input type="number" id="startNum" value="0" min="0">
+      </div>
+      <div class="field">
+        <label>Jumlah Lembar (Baris)</label>
+        <input type="number" id="sheetCount" value="0" min="1" max="2000">
+        <span class="hint">Maks. 2000 lembar</span>
+      </div>
+      <div class="field">
+        <label>Langkah / Step</label>
+        <input type="number" id="step" value="1" min="1">
+        <span class="hint">Selisih antar nomor dalam satu kolom</span>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Format Nomor -->
+    <div class="sidebar-section">
+      <p class="section-label">Format Nomor</p>
+      <div class="field">
+        <label>Padding Digit</label>
+        <select id="padding">
+          <option value="0">Tanpa padding  (1, 2, 3…)</option>
+          <option value="2">2 digit  (01, 02…)</option>
+          <option value="3">3 digit  (001, 002…)</option>
+          <option value="4">4 digit  (0001…)</option>
+          <option value="5">5 digit  (00001…)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Prefix / Suffix -->
+    <div class="sidebar-section">
+      <div class="toggle-row">
+        <span class="toggle-label">Prefix / Suffix</span>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="affix-toggle" onchange="toggleAffixSection()">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="collapsible" id="affix-section">
+        <div class="collapsible-inner">
+          <div class="field">
+            <label>Prefix</label>
+            <input type="text" id="prefix" placeholder="Cth: INV- atau NO-">
+          </div>
+          <div class="field">
+            <label>Suffix</label>
+            <input type="text" id="suffix" placeholder="Cth: /XII/2026">
+          </div>
+          <div class="field">
+            <label>Preview</label>
+            <input type="text" id="preview-format" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Actions -->
+    <div class="sidebar-section">
+      <button class="btn-generate" onclick="generateNumbers()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Generate Nomor
+      </button>
+      <button class="btn-print" id="btn-print" onclick="window.print()" disabled>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Cetak / Export PDF
+      </button>
+      <button class="btn-print" onclick="generateRawOutput()">
+        Copy Format \\
+      </button>
+      <div class="action-footer">
+        <button class="btn-reset" onclick="resetAll()">Reset semua</button>
+        <span id="total-label"></span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- MAIN PREVIEW -->
+  <main>
+
+    <!-- Sticky bar -->
+    <div class="preview-bar">
+      <span class="preview-title">Preview Nomor</span>
+      <div class="preview-bar-right">
+        <div id="stats-row">
+          <div class="stat-chip">Lembar <strong id="stat-rows">—</strong></div>
+          <div class="stat-chip">Titik <strong id="stat-cols">—</strong></div>
+          <div class="stat-chip">Total <strong id="stat-total" class="yellow">—</strong></div>
+          <div class="stat-chip">Awal <strong id="stat-start">—</strong></div>
+          <div class="stat-chip">Akhir <strong id="stat-end">—</strong></div>
+        </div>
+        <div id="view-controls-single">
+          <button class="view-btn active" id="vbtn-md" onclick="setView('md')" title="Medium">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+          </button>
+          <button class="view-btn" id="vbtn-lg" onclick="setView('lg')" title="Large">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="14" height="6" rx="1"/><rect x="1" y="9" width="14" height="6" rx="1"/></svg>
+          </button>
+          <button class="view-btn" id="vbtn-sm" onclick="setView('sm')" title="Small">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="4" height="4" rx="1"/><rect x="6" y="1" width="4" height="4" rx="1"/><rect x="11" y="1" width="4" height="4" rx="1"/><rect x="1" y="7" width="4" height="4" rx="1"/><rect x="6" y="7" width="4" height="4" rx="1"/><rect x="11" y="7" width="4" height="4" rx="1"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div id="preview-content">
+
+      <!-- Empty state -->
+      <div id="empty-state">
+        <div class="empty-icon">№</div>
+        <p class="empty-title">Siap untuk di-generate</p>
+        <p class="empty-sub">
+          Atur <span>Jumlah Titik Nomor</span> dan
+          <span>Jumlah Lembar</span>, lalu klik
+          <span>Generate Nomor</span>.
+        </p>
+        <div class="empty-preview">
+          <span class="empty-chip">0001</span>
+          <span class="empty-chip">0001</span>
+          <span class="empty-chip">0001</span>
+          <span class="empty-chip" style="opacity:.35">…</span>
+        </div>
+      </div>
+
+      <!-- Table (multi-titik) -->
+      <div id="table-wrap" style="display:none;" class="nomor-table-wrap">
+        <table id="nomor-table"></table>
+      </div>
+
+      <!-- Card grid (titik=1) -->
+      <div id="number-grid" style="display:none;"></div>
+      <!-- TAMBAHKAN DI BAWAH number-grid -->
+      <textarea id="raw-output" readonly style="
+        display:none;
+        width:100%;
+        height:200px;
+        margin-top:12px;
+        padding:12px;
+        background:#111;
+        border:1px solid #2E2E32;
+        border-radius:10px;
+        font-family:monospace;
+        font-size:12px;
+        color:#FFCC00;
+      "></textarea>
+
+    </div>
+  </main>
+</div>
+
+<script src="\script.js"></script>
+</body>
+</html>
