@@ -23,7 +23,7 @@ Generator nomor urut otomatis untuk kebutuhan percetakan, invoice, tiket, kupon,
 
 ## 🚀 Demo
 
-🔗 [https://nomorator.vercel.app](https://nomorator.kangujnx.my.id/)
+🔗 [Klik Disini!!!](https://nomorator.kangujnx.my.id/)
 
 ---
 
