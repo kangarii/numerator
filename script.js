@@ -313,3 +313,41 @@ function generateRawOutput() {
   raw.focus();
   raw.select();
 }
+
+/* ---- Download raw output as .txt ---- */
+function downloadRawAsTxt() {
+  const raw = document.getElementById("raw-output");
+  if (!raw) {
+    alert("Elemen raw-output tidak ditemukan.");
+    return;
+  }
+  let content = raw.value;
+  if (!content) {
+    if (generatedData.length) {
+      generateRawOutput();
+      content = raw.value;
+    }
+  }
+  if (!content) {
+    alert("Tidak ada data untuk diunduh. Generate nomor dulu!");
+    return;
+  }
+
+  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+  const filename = `nomorator_${ts}.txt`;
+
+  if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(blob, filename);
+  } else {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      URL.revokeObjectURL(a.href);
+      a.remove();
+    }, 100);
+  }
+}
