@@ -2,7 +2,7 @@
 
 Generator nomor urut otomatis untuk kebutuhan percetakan, invoice, tiket, kupon, nota, dan dokumen bernomor lainnya.
 
-![Preview](https://cdn.discordapp.com/attachments/404590674370101248/1501591994529747045/image.png?ex=69fca205&is=69fb5085&hm=da2de00f2487ed26f9110732af4791a558dd2f6c81382ff7938ed29a4c4ebcbe)
+![Preview](https://cdn.discordapp.com/attachments/404590674370101248/1501591994529747045/image.png?ex=6a5c36c5&is=6a5ae545&hm=d8906a34e46e666aaa835bbb945daf186f4ed41cc22c061b98a4ad363a80ae30)
 
 ---
 
