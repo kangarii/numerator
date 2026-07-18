@@ -274,7 +274,7 @@ input:focus,
 select:focus {
   border-color: var(--yellow);
   box-shadow: 0 0 0 3px var(--yellow-glow);
-  background: #1e1e20;
+  background: var(--card-h);
 }
 input[readonly] {
   color: var(--yellow);
@@ -635,7 +635,7 @@ main {
 }
 
 #nomor-table thead th {
-  background: #111113;
+  background: var(--card-h);
   color: var(--yellow);
   padding: 9px 14px;
   font-size: 10px;
