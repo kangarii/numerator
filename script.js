@@ -231,6 +231,52 @@ function resetAll() {
 /* Init */
 updateTitikVisual();
 updatePreviewFormat();
+
+/* ---- Theme toggle ---- */
+function applyTheme(theme) {
+  // Add animating class, then switch theme to trigger transitions
+  document.body.classList.add("theme-animating");
+  requestAnimationFrame(() => {
+    document.body.classList.toggle("theme-light", theme === "light");
+    try {
+      localStorage.setItem("nomorator-theme", theme);
+    } catch (e) {}
+    updateThemeButton();
+    setTimeout(() => document.body.classList.remove("theme-animating"), 360);
+  });
+}
+
+function updateThemeButton() {
+  const btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+  const isLight = document.body.classList.contains("theme-light");
+  btn.textContent = isLight ? "🌙" : "☀️";
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.contains("theme-light");
+  applyTheme(isLight ? "dark" : "light");
+}
+
+function initTheme() {
+  const saved = (function () {
+    try {
+      return localStorage.getItem("nomorator-theme");
+    } catch (e) {
+      return null;
+    }
+  })();
+  const prefersLight =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: light)").matches;
+  const theme = saved || (prefersLight ? "light" : "dark");
+  applyTheme(theme);
+  document
+    .getElementById("theme-toggle")
+    ?.addEventListener("click", toggleTheme);
+}
+
+initTheme();
 function generateRawOutput() {
   if (!generatedData.length) {
     alert("Generate nomor dulu!");
