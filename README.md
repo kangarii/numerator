@@ -18,6 +18,7 @@ Generator nomor urut otomatis untuk kebutuhan percetakan, invoice, tiket, kupon,
 - Copy hasil format raw
 - Print & Save PDF
 - Ringan tanpa framework
+- Tersedia mode dark & light
 
 ---
 
@@ -87,7 +88,7 @@ Gunakan tombol:
 
 - Print
 - Save PDF
-- Copy Format
+- Download .txt
 
 ---
 
