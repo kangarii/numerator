@@ -84,19 +84,12 @@
         <div class="sidebar-section">
           <p class="section-label">Format Nomor</p>
           <div class="field">
-            <label>Padding Digit</label>
-            <select id="padding">
-              <option value="0">Tanpa padding (1, 2, 3…)</option>
-              <option value="2">2 digit (01, 02…)</option>
-              <option value="3">3 digit (001, 002…)</option>
-              <option value="4">4 digit (0001…)</option>
-              <option value="5">5 digit (00001…)</option>
-              <option value="6">6 digit (000001…)</option>
-              <option value="7">7 digit (0000001…)</option>
-              <option value="8">8 digit (00000001…)</option>
-              <option value="9">9 digit (000000001…)</option>
-              <option value="10">10 digit (0000000001…)</option>
-            </select>
+            <label>Padding Digit (custom)</label>
+            <input type="number" id="padding" value="0" min="0" max="20" />
+            <span class="hint"
+              >Masukkan jumlah digit padding (0 = tanpa padding). Maksimal
+              20.</span
+            >
           </div>
         </div>
 
