@@ -73,6 +73,12 @@ function generateNumbers() {
   }
 
   generatedData = [];
+  // clear raw output so download will regenerate from current data
+  const rawEl = document.getElementById("raw-output");
+  if (rawEl) {
+    rawEl.value = "";
+    rawEl.style.display = "none";
+  }
   for (let r = 0; r < rows; r++) {
     const row = [];
     for (let c = 0; c < cols; c++) {
