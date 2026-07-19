@@ -79,19 +79,124 @@ function generateNumbers() {
     rawEl.value = "";
     rawEl.style.display = "none";
   }
-  for (let r = 0; r < rows; r++) {
-    const row = [];
+
+  // Disable action buttons while generating
+  const btnPrint = document.getElementById("btn-print");
+  const btnDownload = document.getElementById("btn-download-txt");
+  if (btnPrint) btnPrint.disabled = true;
+  if (btnDownload) btnDownload.disabled = true;
+
+  // chunked generation + incremental render to avoid long main-thread tasks
+  const chunkSize = 100; // rows per chunk (tuneable)
+  let r = 0;
+
+  // prepare containers for incremental rendering
+  const isSingle = cols === 1;
+  const table = document.getElementById("nomor-table");
+  const grid = document.getElementById("number-grid");
+  if (table) table.innerHTML = "";
+  if (grid) grid.innerHTML = "";
+
+  // If multi-column, create table head first
+  if (!isSingle && table) {
+    const thead = document.createElement("thead");
+    const hrow = document.createElement("tr");
+    const th0 = document.createElement("th");
+    th0.className = "row-head";
+    th0.textContent = "Lbr";
+    hrow.appendChild(th0);
     for (let c = 0; c < cols; c++) {
-      row.push(start + c * rows * step + r * step);
+      const th = document.createElement("th");
+      th.textContent = "No" + (c + 1);
+      hrow.appendChild(th);
     }
-    generatedData.push(row);
+    thead.appendChild(hrow);
+    table.appendChild(thead);
+    const tbody = document.createElement("tbody");
+    table.appendChild(tbody);
   }
 
-  renderOutput(cols);
-  updateStats(rows, cols, start, step);
-  document.getElementById("btn-print").disabled = false;
-  document.getElementById("total-label").textContent =
-    (rows * cols).toLocaleString() + " nomor";
+  function processChunk() {
+    const end = Math.min(r + chunkSize, rows);
+    const tbody = document.querySelector("#nomor-table tbody");
+    const frag = document.createDocumentFragment();
+
+    for (; r < end; r++) {
+      const row = [];
+      for (let c = 0; c < cols; c++) {
+        row.push(start + c * rows * step + r * step);
+      }
+      generatedData.push(row);
+
+      if (isSingle && grid) {
+        const card = document.createElement("div");
+        const cardClass =
+          currentView === "lg" ? "large" : currentView === "sm" ? "small" : "";
+        card.className = "num-card " + cardClass;
+        const seq = document.createElement("span");
+        seq.className = "seq-num";
+        seq.textContent = r + 1;
+        const txt = document.createElement("span");
+        txt.textContent = formatNumber(row[0]);
+        card.appendChild(seq);
+        card.appendChild(txt);
+        frag.appendChild(card);
+      } else if (tbody) {
+        const tr = document.createElement("tr");
+        const td0 = document.createElement("td");
+        td0.className = "row-num";
+        td0.textContent = r + 1;
+        tr.appendChild(td0);
+        row.forEach((num) => {
+          const td = document.createElement("td");
+          td.textContent = formatNumber(num);
+          tr.appendChild(td);
+        });
+        frag.appendChild(tr);
+      }
+    }
+
+    // append fragment to appropriate container
+    if (isSingle && grid) {
+      grid.appendChild(frag);
+    } else if (tbody) {
+      tbody.appendChild(frag);
+    }
+
+    // update progress UI
+    document.getElementById("stats-row").style.display = "flex";
+    document.getElementById("stat-rows").textContent = rows.toLocaleString();
+    document.getElementById("stat-cols").textContent = cols;
+    document.getElementById("stat-total").textContent = (
+      rows * cols
+    ).toLocaleString();
+
+    if (r < rows) {
+      // yield to main thread briefly
+      setTimeout(processChunk, 0);
+    } else {
+      // finished
+      updateStats(rows, cols, start, step);
+      if (btnPrint) btnPrint.disabled = false;
+      if (btnDownload) btnDownload.disabled = false;
+      document.getElementById("total-label").textContent =
+        (rows * cols).toLocaleString() + " nomor";
+      // ensure empty-state hidden and appropriate views
+      document.getElementById("empty-state").style.display = "none";
+      if (isSingle) {
+        document.getElementById("table-wrap").style.display = "none";
+        document.getElementById("number-grid").style.display = "grid";
+        document.getElementById("view-controls-single").style.display = "flex";
+      } else {
+        document.getElementById("number-grid").style.display = "none";
+        document.getElementById("table-wrap").style.display = "block";
+        document.getElementById("view-controls-single").style.display = "none";
+      }
+    }
+  }
+
+  // start chunked processing
+  processChunk();
 }
 
 /* ---- Render ---- */
