@@ -2,7 +2,7 @@
 
 Generator nomor urut otomatis untuk kebutuhan percetakan, invoice, tiket, kupon, nota, dan dokumen bernomor lainnya.
 
-![Preview](https://cdn.discordapp.com/attachments/404590674370101248/1501591994529747045/image.png?ex=69fca205&is=69fb5085&hm=da2de00f2487ed26f9110732af4791a558dd2f6c81382ff7938ed29a4c4ebcbe)
+![Preview](https://cdn.discordapp.com/attachments/404590674370101248/1528033623268135084/image.png?ex=6a5cd3b5&is=6a5b8235&hm=8141bd2af7bf4d719f051683c72cbf9339e301eebab11eb875cddf0d772e14ac)
 
 ---
 
@@ -18,6 +18,7 @@ Generator nomor urut otomatis untuk kebutuhan percetakan, invoice, tiket, kupon,
 - Copy hasil format raw
 - Print & Save PDF
 - Ringan tanpa framework
+- Tersedia mode dark & light
 
 ---
 
@@ -87,7 +88,7 @@ Gunakan tombol:
 
 - Print
 - Save PDF
-- Copy Format
+- Download .txt
 
 ---
 
